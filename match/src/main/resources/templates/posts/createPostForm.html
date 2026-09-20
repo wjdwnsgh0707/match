@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>새 모집글 작성</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; padding: 40px; background-color: #f8f9fa; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { color: #0056b3; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        textarea { height: 120px; }
+        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-submit { flex: 2; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 6px; font-size: 1rem; font-weight: bold; cursor: pointer; }
+        .btn-cancel { flex: 1; padding: 12px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 6px; font-size: 1rem; font-weight: bold; text-align: center; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>✍️ 새 모집글 작성</h1>
+    <form action="/posts/new" method="post">
+        <div class="form-group">
+            <label for="category">구분</label>
+            <select id="category" name="category">
+                <option value="공모전">공모전</option>
+                <option value="스터디">스터디</option>
+                <option value="프로젝트">캡스톤/프로젝트</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="title">제목</label>
+            <input type="text" id="title" name="title" placeholder="예: [캡스톤] 백엔드 개발자 1명 구합니다!" required>
+        </div>
+        <div class="form-group">
+            <label for="position">모집 분야</label>
+            <input type="text" id="position" name="position" placeholder="예: 백엔드(Spring Boot), 프론트엔드 등" required>
+        </div>
+        <div class="form-group">
+            <label for="writer">작성자 (이름 또는 닉네임)</label>
+            <input type="text" id="writer" name="writer" placeholder="예: 홍길동" required>
+        </div>
+        <div class="form-group">
+            <label for="content">상세 내용</label>
+            <textarea id="content" name="content" placeholder="프로젝트 내용이나 진행 방식을 자유롭게 적어주세요." required></textarea>
+        </div>
+        <div class="btn-group">
+            <button type="submit" class="btn-submit">모집글 등록하기</button>
+            <a href="/posts" class="btn-cancel">취소</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>

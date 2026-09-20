@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>팀원 모집 게시판</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; padding: 40px; background-color: #f8f9fa; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { color: #0056b3; }
+        .btn { display: inline-block; padding: 10px 20px; background-color: #0056b3; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border-bottom: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f1f3f5; }
+        .badge { padding: 4px 8px; border-radius: 12px; font-size: 0.85rem; background-color: #e7f5ff; color: #1c7ed6; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>📢 팀원 모집 게시판</h1>
+    <a href="/posts/new" class="btn">+ 새 모집글 작성하기</a>
+
+    <table>
+        <thead>
+        <tr>
+            <th>번호</th>
+            <th>구분</th>
+            <th>제목</th>
+            <th>모집 분야</th>
+            <th>작성자</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="post : ${posts}">
+            <td th:text="${post.id}">1</td>
+            <td><span class="badge" th:text="${post.category}">공모전</span></td>
+            <td th:text="${post.title}">알고리즘 스터디 모집합니다</td>
+            <td th:text="${post.position}">백엔드</td>
+            <td th:text="${post.writer}">컴공과</td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(posts)}">
+            <td colspan="5" style="text-align: center; color: #888; padding: 30px;">
+                등록된 모집글이 없습니다. 첫 모집글을 작성해보세요! 🚀
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
