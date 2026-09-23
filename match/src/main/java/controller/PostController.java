@@ -1,11 +1,17 @@
-package com.shinhan.match.controller;
+package controller;
 
-import com.shinhan.match.domain.Post;
-import com.shinhan.match.repository.PostRepository;
+import domain.Member;
+import domain.Post;
+import repository.PostRepository;
+import service.FileStore;
+import jakarta.servlet.http.HttpServletRequest; // 👈 추가된 부분
+import jakarta.servlet.http.HttpSession;        // 👈 추가된 부분
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -13,36 +19,54 @@ import java.util.List;
 public class PostController {
 
     private final PostRepository postRepository;
+    private final FileStore fileStore;
 
-    public PostController(PostRepository postRepository) {
+    public PostController(PostRepository postRepository, FileStore fileStore) {
         this.postRepository = postRepository;
+        this.fileStore = fileStore;
     }
 
-    // 1. 모집글 전체 목록 보기
     @GetMapping
-    public String list(Model model) {
+    public String list(HttpServletRequest request, Model model) {
         List<Post> posts = postRepository.findAll();
         model.addAttribute("posts", posts);
+
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            Member loginMember = (Member) session.getAttribute("loginMember");
+            model.addAttribute("loginMember", loginMember);
+        }
+
         return "posts/list";
     }
 
-    // 2. 모집글 작성 폼 이동
     @GetMapping("/new")
     public String createForm() {
         return "posts/createPostForm";
     }
 
-    // 3. 모집글 저장 처리
     @PostMapping("/new")
-    public String create(@RequestParam("title") String title,
-                         @RequestParam("category") String category,
-                         @RequestParam("position") String position,
-                         @RequestParam("writer") String writer,
-                         @RequestParam("content") String content) {
+    public String create(@ModelAttribute Post post,
+                         @RequestParam(name = "imageFile", required = false) MultipartFile imageFile) throws IOException {
 
-        Post post = new Post(null, title, content, category, position, writer);
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String imageUrl = fileStore.storeFile(imageFile);
+            post.setImageUrl(imageUrl);
+        }
+
         postRepository.save(post);
-
         return "redirect:/posts";
+    }
+
+    @GetMapping("/{id}")
+    public String getPostDetail(@PathVariable Long id, Model model) {
+        Post post = postRepository.findById(id);
+
+        if (post == null) {
+            return "redirect:/posts";
+        }
+
+        model.addAttribute("post", post);
+        return "posts/detail";
     }
 }
