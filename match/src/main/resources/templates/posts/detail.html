@@ -2,50 +2,44 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>모집글 상세 보기 - Match</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 40px; line-height: 1.6; }
-        .container { max-width: 800px; margin: 0 auto; border: 1px solid #ddd; padding: 30px; border-radius: 8px; }
-        .badge { display: inline-block; padding: 4px 10px; background-color: #007bff; color: white; border-radius: 4px; font-size: 0.9em; }
-        .poster-img { width: 100%; max-height: 400px; object-fit: cover; border-radius: 8px; margin: 20px 0; }
-        .info-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-        .info-table th, .info-table td { border-bottom: 1px solid #eee; padding: 10px; text-align: left; }
-        .info-table th { width: 20%; background-color: #f9f9f9; }
-        .content-box { min-height: 150px; padding: 15px; background-color: #f8f9fa; border-radius: 6px; white-space: pre-wrap; }
-        .btn { display: inline-block; padding: 8px 16px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 4px; margin-top: 20px; }
-    </style>
+    <title>모집글 상세 보기</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
+<div class="container mt-5" style="max-width: 800px;">
+    <h2 class="mb-4">모집글 상세 보기</h2>
 
-<div class="container">
-    <div>
-        <span class="badge" th:text="${post.category}">카테고리</span>
-        <h2 th:text="${post.title}" style="display: inline; margin-left: 10px;">글 제목</h2>
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div>
+                <span class="badge bg-info text-dark me-2" th:if="${post.category != null}" th:text="${post.category.description}">분류</span>
+                <h4 class="d-inline align-middle mb-0" th:text="${post.title}">게시글 제목</h4>
+            </div>
+            <small class="text-muted" th:if="${post.createdDate != null}"
+                   th:text="${#temporals.format(post.createdDate, 'yyyy-MM-dd HH:mm')}">2026-09-25 12:00</small>
+        </div>
+        <div class="card-body">
+            <div class="mb-3 text-end text-secondary">
+                작성자: <span class="fw-bold" th:text="${post.author}">작성자</span>
+            </div>
+            <hr>
+            <div class="card-text my-4" style="white-space: pre-line;" th:text="${post.content}">
+                상세 내용이 들어가는 자리입니다.
+            </div>
+        </div>
     </div>
 
-    <!-- 🖼️ 공모전 포스터 이미지가 있는 경우에만 표시 -->
-    <div th:if="${post.imageUrl != null and !post.imageUrl.isEmpty()}">
-        <img th:src="${post.imageUrl}" alt="공모전 포스터" class="poster-img">
+    <div class="d-flex gap-2">
+        <a th:href="@{/posts}" class="btn btn-secondary">목록으로</a>
+        <a th:href="@{/posts/{id}/edit(id=${post.id})}"
+           th:if="${session.loginMember != null and session.loginMember == post.author}"
+           class="btn btn-warning">수정</a>
+        <form th:action="@{/posts/{id}/delete(id=${post.id})}" method="post"
+              th:if="${session.loginMember != null and session.loginMember == post.author}"
+              onsubmit="return confirm('정말 삭제하시겠습니까?');">
+            <button type="submit" class="btn btn-danger">삭제</button>
+        </form>
     </div>
-
-    <table class="info-table">
-        <tr>
-            <th>작성자</th>
-            <td th:text="${post.writer}">작성자 이름</td>
-        </tr>
-        <tr>
-            <th>모집 분야</th>
-            <td th:text="${post.position}">모집 역할/인원</td>
-        </tr>
-    </table>
-
-    <h3>상세 내용</h3>
-    <div class="content-box" th:text="${post.content}">
-        게시글 상세 본문 내용이 여기에 들어갑니다.
-    </div>
-
-    <a href="/posts" class="btn">목록으로 돌아가기</a>
 </div>
-
 </body>
 </html>
